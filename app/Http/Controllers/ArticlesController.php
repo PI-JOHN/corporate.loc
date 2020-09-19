@@ -25,16 +25,20 @@ class ArticlesController extends SiteController
         $this->c_rep = $c_rep;
 
         $this->bar = 'right';
-        $this->template = env('THEME').'.articles';
+        $this->template = Config::get('settings.theme').'.articles';
     }
 
 
     public function index($cat_alias = FALSE)
     {
         //
+
+        $this->title = 'Блог';
+        $this->keywords = 'String';
+        $this->meta_desc = 'String';
         $articles = $this->getArticles($cat_alias);
 
-        $content = view(env('THEME').'.articles_content')->with('articles',$articles)->render();
+        $content = view(Config::get('settings.theme').'.articles_content')->with('articles',$articles)->render();
 
         $this->vars = Arr::add($this->vars,'content',$content);
 
@@ -42,7 +46,7 @@ class ArticlesController extends SiteController
         $portfolios =$this->getPortfolios(Config::get('settings.recent_portfolios'));
 
 
-        $this->contentRightBar = view(env('THEME').'.articlesBar')->with(['comments' => $comments,'portfolios'=>$portfolios]);
+        $this->contentRightBar = view(Config::get('settings.theme').'.articlesBar')->with(['comments' => $comments,'portfolios'=>$portfolios]);
 
         return $this->renderOutput();
     }
@@ -56,13 +60,21 @@ class ArticlesController extends SiteController
             $article->img = json_decode($article->img);
         }
 
-        $content = view(env('THEME').'.article_content')->with('article',$article)->render();
+        if(isset($article->id)){
+            $this->title = $article->title;
+            $this->keywords = $article->keywords;
+            $this->meta_desc = $article->meta_desc;
+        }
+
+
+
+        $content = view(Config::get('settings.theme').'.article_content')->with('article',$article)->render();
         $this->vars = Arr::add($this->vars,'content',$content);
 
         $comments = $this->getComments(Config::get('settings.recent_comments'));
         $portfolios =$this->getPortfolios(Config::get('settings.recent_portfolios'));
 
-        $this->contentRightBar = view(env('THEME').'.articlesBar')->with(['comments' => $comments,'portfolios'=>$portfolios]);
+        $this->contentRightBar = view(Config::get('settings.theme').'.articlesBar')->with(['comments' => $comments,'portfolios'=>$portfolios]);
 
 
         return $this->renderOutput();
@@ -95,7 +107,7 @@ class ArticlesController extends SiteController
             $where = ['category_id',$id];
         }
 
-        $articles = $this->a_rep->get(['id','title','alias','created_at','img','desc','user_id','category_id'],FALSE,TRUE,$where);
+        $articles = $this->a_rep->get(['id','title','alias','created_at','img','desc','user_id','category_id','keywords','meta_desc'],FALSE,TRUE,$where);
 
         if($articles){
             $articles->load('user','category','comments');

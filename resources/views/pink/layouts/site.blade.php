@@ -28,26 +28,28 @@
     <meta name="description" content="{{ (isset($meta_desc)) ? $meta_desc : ''}}">
     <meta name="keywords" content="{{ (isset($keywords)) ? $keywords : ''}}">
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>{{ (isset($title)) ? $title : 'Pink' }}</title>
 
     <!-- [favicon] begin -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset(env('THEME')) }}/images/favicon.ico" />
-    <link rel="icon" type="image/x-icon" href="{{ asset(env('THEME')) }}/images/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset(Config::get('settings.theme')) }}/images/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="{{ asset(Config::get('settings.theme')) }}/images/favicon.ico" />
     <!-- Touch icons more info: http://mathiasbynens.be/notes/touch-icons -->
     <!-- For iPad3 with retina display: -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset(env('THEME')) }}/apple-touch-icon-144x.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset(Config::get('settings.theme')) }}/apple-touch-icon-144x.png" />
     <!-- For first- and second-generation iPad: -->
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset(env('THEME')) }}/apple-touch-icon-114x.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset(Config::get('settings.theme')) }}/apple-touch-icon-114x.png" />
     <!-- For first- and second-generation iPad: -->
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset(env('THEME')) }}/apple-touch-icon-72x.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset(Config::get('settings.theme')) }}/apple-touch-icon-72x.png" />
     <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
-    <link rel="apple-touch-icon-precomposed" href="{{ asset(env('THEME')) }}/apple-touch-icon-57x.png" />
+    <link rel="apple-touch-icon-precomposed" href="{{ asset(Config::get('settings.theme')) }}/apple-touch-icon-57x.png" />
     <!-- [favicon] end -->
 
     <!-- CSSs -->
-    <link rel="stylesheet" type="text/css" media="all" href="{{ asset(env('THEME')) }}/css/reset.css" /> <!-- RESET STYLESHEET -->
-    <link rel="stylesheet" type="text/css" media="all" href="{{ asset(env('THEME')) }}/style.css" /> <!-- MAIN THEME STYLESHEET -->
-    <link rel="stylesheet" id="max-width-1024-css" href="{{ asset(env('THEME')) }}/css/max-width-1024.css" type="text/css" media="screen and (max-width: 1240px)" />
+    <link rel="stylesheet" type="text/css" media="all" href="{{ asset(Config::get('settings.theme')) }}/css/reset.css" /> <!-- RESET STYLESHEET -->
+    <link rel="stylesheet" type="text/css" media="all" href="{{ asset(Config::get('settings.theme')) }}/style.css" /> <!-- MAIN THEME STYLESHEET -->
+    <link rel="stylesheet" id="max-width-1024-css" href="{{ asset(Config::get('settings.theme')) }}/css/max-width-1024.css" type="text/css" media="screen and (max-width: 1240px)" />
     <link rel="stylesheet" id="max-width-768-css" href="{{ asset(env('THEME')) }}/css/max-width-768.css" type="text/css" media="screen and (max-width: 987px)" />
     <link rel="stylesheet" id="max-width-480-css" href="{{ asset(env('THEME')) }}/css/max-width-480.css" type="text/css" media="screen and (max-width: 480px)" />
     <link rel="stylesheet" id="max-width-320-css" href="{{ asset(env('THEME')) }}/css/max-width-320.css" type="text/css" media="screen and (max-width: 320px)" />
@@ -80,11 +82,13 @@
     <script type="text/javascript" src="{{ asset(env('THEME')) }}/js/jquery.colorbox-min.js"></script> <!-- nav -->
     <script type="text/javascript" src="{{ asset(env('THEME')) }}/js/jquery.tweetable.js"></script>
 
+    <script type="text/javascript" src="{{ asset(env('THEME')) }}/js/myscripts.js"></script>
+
 </head>
 <!-- END HEAD -->
 
 <!-- START BODY -->
-<body class="no_js responsive {{ \Illuminate\Support\Facades\Route::currentRouteName() == 'home' ? 'page-template-home-php' : '' }} stretched">
+<body class="no_js responsive {{ (\Illuminate\Support\Facades\Route::currentRouteName() == 'home') || (\Illuminate\Support\Facades\Route::currentRouteName() == 'portfolios.index') || (\Illuminate\Support\Facades\Route::currentRouteName() == 'portfolios.show') ? 'page-template-home-php' : '' }} stretched">
 
 <!-- START BG SHADOW -->
 <div class="bg-shadow">
@@ -126,6 +130,30 @@
         <!-- START SLIDER -->
         @yield('slider')
 
+        <div class="wrap_result"></div>
+
+        @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'portfolios.index')
+        <!-- START PAGE META -->
+        <div id="page-meta">
+            <div class="inner group">
+                <h3>Welcome to my portfolio page</h3>
+                <h4>... i hope you enjoy my works</h4>
+            </div>
+        </div>
+        <!-- END PAGE META -->
+        @endif
+
+    @if(\Illuminate\Support\Facades\Route::currentRouteName() == 'contacts')
+        <!-- START PAGE META -->
+            <div id="page-meta">
+                <div class="inner group">
+                    <h3>...Say Hello! :)</h3>
+                    <h4>Get in touch with Pink Rio team</h4>
+                </div>
+            </div>
+            <!-- END PAGE META -->
+    @endif
+
         <!-- START PRIMARY -->
         <div id="primary" class="sidebar-{{ isset($bar) ? $bar : 'no' }}">
             <div class="inner group">
@@ -147,6 +175,7 @@
     </div>
     <!-- END WRAPPER -->
 </div>
+
 <!-- END BG SHADOW -->
 
 <script type="text/javascript" src="{{ asset(env('THEME')) }}/js/jquery.custom.js"></script>

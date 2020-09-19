@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Menu;
+use App\User;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +24,7 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     public const HOME = '/home';
+    public const ADMIN = '/admin';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -31,8 +34,20 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-
+        Route::pattern('alias','[\w-]+');
         parent::boot();
+
+        Route::bind('articles', function($value){
+            return \App\Article::where('alias',$value)->first();
+        });
+
+        Route::bind('menus', function ($value) {
+            return Menu::where('id',$value)->first();
+        });
+
+        Route::bind('users', function ($value) {
+            return User::find($value);
+        });
     }
 
     /**

@@ -40,6 +40,9 @@
     <!-- START COMMENTS -->
     <div id="comments">
         <h3 id="comments-title">
+
+            @if(count($article->comments) > 0)
+
             <span>{{ count($article->comments) }}</span> {{ \Illuminate\Support\Facades\Lang::choice('ru.comments', count($article->comments)) }}
         </h3>
 
@@ -57,35 +60,9 @@
 
             @endforeach
 
-
-            <li class="comment bypostauthor odd">
-                <div class="comment-container">
-                    <div class="comment-author vcard">
-                        <img alt="" src="images/avatar/nicola.jpeg" class="avatar" height="75" width="75" />
-                        <cite class="fn">nicola</cite>
-                    </div>
-                    <!-- .comment-author .vcard -->
-                    <div class="comment-meta commentmetadata">
-                        <div class="intro">
-                            <div class="commentDate">
-                                <a href="#">
-                                    September 24, 2012 at 1:32 pm</a>
-                            </div>
-                            <div class="commentNumber">#&nbsp;2</div>
-                        </div>
-                        <div class="comment-body">
-                            <p>While i’m the author of the post. My comment template is different, something like a “sticky comment”!</p>
-                        </div>
-                        <div class="reply group">
-                            <a class="comment-reply-link" href="#respond" onclick="return addComment.moveForm(&quot;comment-3&quot;, &quot;3&quot;, &quot;respond&quot;, &quot;41&quot;)">Reply</a>
-                        </div>
-                        <!-- .reply -->
-                    </div>
-                    <!-- .comment-meta .commentmetadata -->
-                </div>
-                <!-- #comment-##  -->
-            </li>
         </ol>
+
+            @endif
 
         <!-- START TRACKBACK & PINGBACK -->
         <h2 id="trackbacks">Trackbacks and pingbacks</h2>
@@ -95,13 +72,22 @@
         <!-- END TRACKBACK & PINGBACK -->
         <div id="respond">
             <h3 id="reply-title">Leave a <span>Reply</span> <small><a rel="nofollow" id="cancel-comment-reply-link" href="#respond" style="display:none;">Cancel reply</a></small></h3>
-            <form action="sendmail.PHP" method="post" id="commentform">
-                <p class="comment-form-author"><label for="author">Name</label> <input id="author" name="author" type="text" value="" size="30" aria-required="true" /></p>
+            <form action="{{ route('comment.store') }}" method="post" id="commentform">
+
+                @if(!\Illuminate\Support\Facades\Auth::check())
+
+                <p class="comment-form-author"><label for="author">Name</label> <input id="name" name="name" type="text" value="" size="30" aria-required="true" /></p>
                 <p class="comment-form-email"><label for="email">Email</label> <input id="email" name="email" type="text" value="" size="30" aria-required="true" /></p>
-                <p class="comment-form-url"><label for="url">Website</label><input id="url" name="url" type="text" value="" size="30" /></p>
-                <p class="comment-form-comment"><label for="comment">Your comment</label><textarea id="comment" name="comment" cols="45" rows="8"></textarea></p>
+                <p class="comment-form-url"><label for="url">Website</label><input id="url" name="site" type="text" value="" size="30" /></p>
+
+                @endif
+
+                <p class="comment-form-comment"><label for="comment">Your comment</label><textarea id="comment" name="text" cols="45" rows="8"></textarea></p>
                 <div class="clear"></div>
                 <p class="form-submit">
+                    {{ csrf_field() }}
+                    <input type="hidden" id="comment_post_ID" name="comment_post_ID" value="{{ $article->id }}" >
+                    <input type="hidden" id="comment_parent" name="comment_parent" value="0" >
                     <input name="submit" type="submit" id="submit" value="Post Comment" />
                 </p>
             </form>

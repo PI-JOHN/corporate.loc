@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Repositories\MenusRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
 use Lavary\Menu\Menu;
 
 class SiteController extends Controller
@@ -41,26 +42,32 @@ class SiteController extends Controller
     {
 
         $menu = $this->getMenu();
-        $navigation = view(env('THEME').'.navigation')->with('menu',$menu)->render();
+        $navigation = view(Config::get('settings.theme').'.navigation')->with('menu',$menu)->render();
         $this->vars = Arr::add($this->vars,'navigation',$navigation);
 
         if($this->contentRightBar){
-            $rightBar = view(env('THEME').'.rightBar')->with('content_rightBar',$this->contentRightBar)->render();
+            $rightBar = view(Config::get('settings.theme').'.rightBar')->with('content_rightBar',$this->contentRightBar)->render();
             $this->vars = Arr::add($this->vars,'rightBar',$rightBar);
         }
+
+        if($this->contentLeftBar){
+            $leftBar = view(Config::get('settings.theme').'.leftBar')->with('content_leftBar',$this->contentLeftBar)->render();
+            $this->vars = Arr::add($this->vars,'leftBar',$leftBar);
+        }
+
         $this->vars = Arr::add($this->vars,'bar',$this->bar);
 
         $this->vars = Arr::add($this->vars,'keywords',$this->keywords);
         $this->vars = Arr::add($this->vars,'meta_desc',$this->meta_desc);
         $this->vars = Arr::add($this->vars,'title',$this->title);
 
-        $footer = view(env('THEME').'.footer')->render();
+        $footer = view(Config::get('settings.theme').'.footer')->render();
         $this->vars = Arr::add($this->vars,'footer',$footer);
 
         return view($this->template)->with($this->vars);
     }
 
-    protected function getMenu()
+    public function getMenu()
     {
         $menu = $this->m_rep->get();
 

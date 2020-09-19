@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,6 +21,35 @@ use Illuminate\Support\Facades\Route;
 //Auth::routes();
 //
 //Route::get('/home', 'HomeController@index')->name('home');
+
+
+Auth::routes();
+
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+
+Route::post('login', 'Auth\LoginController@login');
+
+Route::get('logout', 'Auth\LoginController@logout');
+
+//Admin
+
+Route::name('admin.')->prefix('admin')->middleware('auth')->group(function() {
+//Route::prefix('admin')->middleware('auth')->group(function() {
+
+    //admin
+    Route::get('/',['uses' => 'Admin\IndexController@index','as' => 'adminIndex']);
+    //articles
+    Route::resource('/articles','Admin\ArticlesController');
+    //permissions
+    Route::resource('/permissions','Admin\PermissionsController');
+    //users
+    Route::resource('/users','Admin\UsersController');
+    //menus
+    Route::resource('/menus','Admin\MenusController');
+
+});
+
+
 
 Route::resource('/','IndexController',[
     'only' => ['index'],
@@ -42,4 +72,15 @@ Route::resource('articles','ArticlesController',[
     ]
 ]);
 
-Route::get('articles/cat/{cat_alias?}',['uses'=>'ArticlesController@index','as'=>'articlesCat']);
+Route::get('articles/cat/{cat_alias?}',['uses'=>'ArticlesController@index','as'=>'articlesCat'])->where('cat_alias','[\w-]+');
+
+
+Route::resource('comment','CommentController',['only'=>['store']]);
+
+Route::match(['get','post'],'/contacts',['uses'=>'ContactsController@index','as'=>'contacts']);
+
+
+
+
+
+

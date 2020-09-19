@@ -24,7 +24,7 @@ class IndexController extends SiteController
         $this->a_rep = $a_rep;
 
         $this->bar = 'right';
-        $this->template = env('THEME').'.index';
+        $this->template = Config::get('settings.theme').'.index';
     }
     /**
      * Display a listing of the resource.
@@ -36,14 +36,14 @@ class IndexController extends SiteController
         //
         $portfolios = $this->getPortfolio();
 
-        $content = view(env('THEME').'.content')->with('portfolios',$portfolios)->render();
+        $content = view(Config::get('settings.theme').'.content')->with('portfolios',$portfolios)->render();
         $this->vars = Arr::add($this->vars,'content',$content);
 
         //dd($portfolio);
 
         $sliderItems = $this->getSliders();
 
-        $sliders = view(env('THEME').'.slider')->with('sliders',$sliderItems)->render();
+        $sliders = view(Config::get('settings.theme').'.slider')->with('sliders',$sliderItems)->render();
         $this->vars = Arr::add($this->vars,'sliders',$sliders);
 
         $this->keywords = 'Home Page';
@@ -52,7 +52,7 @@ class IndexController extends SiteController
 
         $articles = $this->getArticles();
         //dd($articles);
-        $this->contentRightBar = view(env('THEME').'.indexBar')->with('articles',$articles)->render();
+        $this->contentRightBar = view(Config::get('settings.theme').'.indexBar')->with('articles',$articles)->render();
 
         return $this->renderOutput();
     }
